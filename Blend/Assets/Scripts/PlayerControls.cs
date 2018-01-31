@@ -10,6 +10,7 @@ public class PlayerControls : MonoBehaviour {
     public bool isMoving = false;
     Vector2 position;
     public Animator animator;
+    float crouch=1;
 
     void Start()
     {
@@ -35,13 +36,13 @@ public class PlayerControls : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            sprint = true;
-            movement = new Vector2(hAxis, vAxis) * speed * Time.deltaTime * 3;            
+            animator.SetBool("Is Sprinting", true);
+            movement = new Vector2(hAxis, vAxis)* crouch * speed * Time.deltaTime * 3;            
         }
         else
         {
-            sprint = false;
-            movement = new Vector2(hAxis, vAxis) * speed * Time.deltaTime;
+            animator.SetBool("Is Sprinting", false);
+            movement = new Vector2(hAxis, vAxis) * speed *  crouch * Time.deltaTime;
         }
 
         if (!rig.position.Equals(rig.position + movement))
@@ -66,6 +67,36 @@ public class PlayerControls : MonoBehaviour {
         {
             animator.SetBool("Is Shooting", false);
         }
-        
+
+        if (Input.GetKey(KeyCode.C))
+        {
+            animator.SetBool("Is Kneeling", true);
+            crouch = 0;
+        }
+
+        else
+        {
+            animator.SetBool("Is Kneeling", false);
+            crouch = 1;
+        }
+
+    }
+
+    public bool facingRight = true; //Depends on if your animation is by default facing right or left
+
+    void FixedUpdate()
+    {
+        float h = Input.GetAxis("Horizontal");
+        if (h > 0 && !facingRight)
+            Flip();
+        else if (h < 0 && facingRight)
+            Flip();
+    }
+    void Flip()
+    {
+        facingRight = !facingRight;
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 }

@@ -2,30 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShadowTrigger : MonoBehaviour {
+public class ShadowTrigger : MonoBehaviour
+{
 
     public GameManager gameManager;
+    public bool inShadow;
 
 
-    private void OnTriggerEnter2d(Collider other)
+    void OnTriggerEnter2d(Collider2D collision)
     {
-            gameManager.invincible=true;
-        
+        if (collision.CompareTag("Player"))
+        {
+            gameManager.InShadow();
+            inShadow = true;
+
+            Debug.Log("IN SHADOW");
+        }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
-        gameManager.invincible = false;
+        if (collision.CompareTag("Player"))
+        {
+            gameManager.OutShadow();
+            inShadow = false;
+            Debug.Log("LEFT SHADOW");
+        }
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            gameManager.InShadow();
+            inShadow = true;
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+            Debug.Log("IN SHADOW");
+
+        }
+
+
+
+    }
 }
